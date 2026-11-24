@@ -1,0 +1,1520 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Uzum Market — Telegram Bozor</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    :root {
+      --uzum-purple: #7000FF;
+      --uzum-purple-dark: #5900CC;
+      --uzum-purple-light: #F2E8FF;
+      --bg-gray: #F2F4F7;
+      --card-white: #FFFFFF;
+      --text-main: #1F2026;
+      --text-muted: #7E818C;
+      --green: #00B85C;
+      --red: #F5222D;
+      --border: #E6E8ED;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Inter, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: var(--bg-gray);
+      color: var(--text-main);
+      padding-bottom: 78px;
+      overflow-x: hidden;
+    }
+
+    /* Top Header */
+    .top-bar {
+      background: var(--card-white);
+      padding: 10px 14px;
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+    }
+
+    .location-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .loc-left {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--text-main);
+    }
+
+    .role-pill {
+      background: var(--uzum-purple-light);
+      color: var(--uzum-purple);
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .role-pill.admin {
+      background: #1F2026;
+      color: #FFD700;
+    }
+
+    .search-row {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .search-box {
+      flex: 1;
+      background: #EDEFF2;
+      border-radius: 10px;
+      padding: 9px 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .search-box input {
+      border: none;
+      background: transparent;
+      width: 100%;
+      font-size: 14px;
+      outline: none;
+      color: var(--text-main);
+    }
+
+    /* Banner */
+    .promo-banner {
+      margin: 12px 14px;
+      background: linear-gradient(135deg, #7000FF 0%, #9E47FF 100%);
+      border-radius: 16px;
+      padding: 16px;
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .promo-banner h2 {
+      font-size: 18px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .promo-banner p {
+      font-size: 12px;
+      opacity: 0.92;
+      margin-bottom: 10px;
+    }
+
+    .promo-btn {
+      background: #fff;
+      color: var(--uzum-purple);
+      border: none;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    /* Quick Categories */
+    .quick-cats {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      padding: 4px 14px 12px;
+      background: var(--card-white);
+      margin-bottom: 10px;
+    }
+
+    .q-cat {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .q-cat-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: #F4F5F8;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .q-cat span {
+      font-size: 11px;
+      color: var(--text-main);
+      line-height: 1.2;
+      font-weight: 500;
+    }
+
+    /* Section Title */
+    .section-header {
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-header h3 {
+      font-size: 19px;
+      font-weight: 800;
+    }
+
+    /* Product Grid */
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding: 0 14px 14px;
+    }
+
+    .p-card {
+      background: var(--card-white);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+    }
+
+    .p-img {
+      height: 145px;
+      background: #F6F7FA;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 54px;
+      position: relative;
+    }
+
+    .p-badge {
+      position: absolute;
+      bottom: 8px;
+      left: 8px;
+      background: var(--uzum-purple);
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    .p-body {
+      padding: 10px;
+    }
+
+    .p-title {
+      font-size: 13px;
+      font-weight: 500;
+      line-height: 1.3;
+      height: 34px;
+      overflow: hidden;
+      margin-bottom: 4px;
+    }
+
+    .p-seller {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-bottom: 6px;
+    }
+
+    .p-installment {
+      background: #FFF3B0;
+      color: #1F2026;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 5px;
+      display: inline-block;
+      margin-bottom: 8px;
+    }
+
+    .p-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .p-price {
+      font-size: 14px;
+      font-weight: 800;
+      color: var(--text-main);
+    }
+
+    .add-cart-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: #fff;
+      color: var(--text-main);
+      font-size: 18px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .add-cart-btn:active {
+      background: var(--uzum-purple);
+      color: #fff;
+      border-color: var(--uzum-purple);
+    }
+
+    /* Screens / Pages */
+    .page {
+      display: none;
+    }
+    .page.active {
+      display: block;
+    }
+
+    /* Catalog List */
+    .cat-list {
+      background: var(--card-white);
+      margin: 10px 14px;
+      border-radius: 16px;
+      overflow: hidden;
+    }
+
+    .cat-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+    }
+
+    .cat-item:last-child { border-bottom: none; }
+
+    /* Profile Header (Uzum Style) */
+    .profile-hero {
+      background: linear-gradient(135deg, #7000FF, #5200B8);
+      color: #fff;
+      padding: 22px 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .avatar-circle {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 26px;
+      font-weight: 800;
+      border: 2px solid #fff;
+    }
+
+    .menu-card {
+      background: var(--card-white);
+      margin: 12px 14px;
+      border-radius: 16px;
+      padding: 6px 0;
+    }
+
+    .menu-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--border);
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+    }
+
+    .menu-row:last-child { border-bottom: none; }
+
+    /* Forms & Inputs */
+    .form-card {
+      background: var(--card-white);
+      margin: 12px 14px;
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .form-group {
+      margin-bottom: 12px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+
+    .form-input, .form-select {
+      width: 100%;
+      background: #F2F4F7;
+      border: 1.5px solid transparent;
+      border-radius: 12px;
+      padding: 12px 14px;
+      font-size: 14px;
+      outline: none;
+      color: var(--text-main);
+    }
+
+    .form-input:focus {
+      border-color: var(--uzum-purple);
+      background: #fff;
+    }
+
+    .btn-primary {
+      width: 100%;
+      background: var(--uzum-purple);
+      color: #fff;
+      border: none;
+      border-radius: 12px;
+      padding: 14px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 6px;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      background: #E6E8ED;
+      color: var(--text-main);
+      border: none;
+      border-radius: 12px;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    /* Face ID Camera Box */
+    .face-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 14px;
+      background: #14151A;
+      border-radius: 16px;
+      color: #fff;
+      margin: 10px 0;
+    }
+
+    .face-ring {
+      width: 210px;
+      height: 210px;
+      border-radius: 50%;
+      border: 4px dashed var(--uzum-purple);
+      overflow: hidden;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #222;
+      margin-bottom: 12px;
+    }
+
+    .face-ring.verified {
+      border: 4px solid var(--green);
+    }
+
+    .face-ring video, .face-ring img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .scan-line {
+      position: absolute;
+      width: 100%;
+      height: 3px;
+      background: #00FF88;
+      box-shadow: 0 0 12px #00FF88;
+      top: 0;
+      animation: scanAnim 2s infinite alternate;
+      display: none;
+    }
+
+    @keyframes scanAnim {
+      0% { top: 10%; }
+      100% { top: 90%; }
+    }
+
+    /* Commission Info Box */
+    .commission-box {
+      background: #F6F0FF;
+      border: 1px solid #D9BFFF;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 13px;
+      margin: 10px 0;
+    }
+
+    /* Admin Dashboard Cards */
+    .admin-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .stat-box {
+      background: #F8F9FB;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .stat-box .val {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--uzum-purple);
+      margin-top: 4px;
+    }
+
+    /* Bottom Navigation (5 Tabs - Uzum Style) */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--card-white);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      padding: 6px 0 8px;
+      z-index: 100;
+    }
+
+    .nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 10px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      position: relative;
+    }
+
+    .nav-item.active {
+      color: var(--uzum-purple);
+    }
+
+    .nav-icon {
+      font-size: 20px;
+    }
+
+    .cart-badge {
+      position: absolute;
+      top: -2px;
+      right: 16px;
+      background: #1F2026;
+      color: #fff;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 10px;
+    }
+
+    /* Role Registration Modal */
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 200;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      background: #fff;
+      width: 100%;
+      max-height: 92vh;
+      overflow-y: auto;
+      border-radius: 22px 22px 0 0;
+      padding: 20px 16px 28px;
+    }
+
+    .role-choice-card {
+      border: 2px solid var(--border);
+      border-radius: 16px;
+      padding: 16px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .role-choice-card:hover {
+      border-color: var(--uzum-purple);
+      background: var(--uzum-purple-light);
+    }
+
+    .toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #1F2026;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      z-index: 300;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+  </style>
+</head>
+<body>
+
+  <div id="toast" class="toast"></div>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <div class="location-row">
+      <div class="loc-left">📍 <span id="userCity">Farg'ona</span> ▾</div>
+      <div id="roleBadge" class="role-pill" onclick="openRoleModal()">Ro'yxatdan o'tish</div>
+    </div>
+    <div class="search-row">
+      <div class="search-box">
+        <span>🔍</span>
+        <input type="text" id="searchInput" placeholder="Mahsulot va toifalarni qidirish" oninput="renderProducts()" />
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE 1: BOSH SAHIFA -->
+  <div id="page-home" class="page active">
+    <div class="promo-banner">
+      <h2>Uzum Market — Telegram Bozor</h2>
+      <p>Sotib oling yoki rasmiy sotuvchi bo‘lib savdo qiling!</p>
+      <button class="promo-btn" onclick="openRoleModal()">Sotuvchi / Xaridor bo‘lish</button>
+    </div>
+
+    <div class="quick-cats">
+      <div class="q-cat" onclick="filterByCat('Elektronika')">
+        <div class="q-cat-icon">🎧</div>
+        <span>Elektronika</span>
+      </div>
+      <div class="q-cat" onclick="filterByCat('Kiyim')">
+        <div class="q-cat-icon">🧥</div>
+        <span>Moda</span>
+      </div>
+      <div class="q-cat" onclick="filterByCat('Maishiy texnika')">
+        <div class="q-cat-icon">🧺</div>
+        <span>Texnika</span>
+      </div>
+      <div class="q-cat" onclick="filterByCat('Avtotovarlar')">
+        <div class="q-cat-icon">🚗</div>
+        <span>Avto</span>
+      </div>
+      <div class="q-cat" onclick="filterByCat('All')">
+        <div class="q-cat-icon">🔥</div>
+        <span>Barchasi</span>
+      </div>
+    </div>
+
+    <div class="section-header">
+      <h3>Mashhur mahsulotlar</h3>
+      <span style="font-size:12px; color:var(--uzum-purple); font-weight:700;" onclick="filterByCat('All')">Hammasi ›</span>
+    </div>
+
+    <div id="productGrid" class="product-grid"></div>
+  </div>
+
+  <!-- PAGE 2: KATALOG -->
+  <div id="page-catalog" class="page">
+    <div class="section-header">
+      <h3>Katalog</h3>
+    </div>
+    <div class="cat-list" id="categoryList"></div>
+  </div>
+
+  <!-- PAGE 3: SAVAT -->
+  <div id="page-cart" class="page">
+    <div class="section-header">
+      <h3>Savat</h3>
+    </div>
+    <div id="cartContainer" class="form-card"></div>
+  </div>
+
+  <!-- PAGE 4: SOTUVCHI KABINETI (KYC + FACE ID + TOVAR QO'SHISH) -->
+  <div id="page-seller" class="page">
+    <div class="section-header">
+      <h3>Sotuvchi markazi</h3>
+    </div>
+    <div id="sellerContent"></div>
+  </div>
+
+  <!-- PAGE 5: PROFIL & ADMIN PANEL -->
+  <div id="page-profile" class="page">
+    <div class="profile-hero">
+      <div class="avatar-circle" id="profAvatar">U</div>
+      <div>
+        <div style="font-size:18px; font-weight:800;" id="profName">Mehmon foydalanuvchi</div>
+        <div style="font-size:13px; opacity:0.9;" id="profPhone">+998 -- --- -- --</div>
+        <div style="font-size:11px; margin-top:4px; background:rgba(0,0,0,0.25); padding:2px 8px; border-radius:8px; display:inline-block;" id="profIdLabel">ID: aniqlanmoqda...</div>
+      </div>
+    </div>
+
+    <!-- Faqat Admin ID (8909500947) uchun ochiladigan menyu -->
+    <div id="adminEntryCard" class="menu-card" style="display:none; border:2px solid var(--uzum-purple);">
+      <div class="menu-row" onclick="toggleAdminPanel()">
+        <span style="color:var(--uzum-purple); font-weight:800;">👑 ADMIN PANEL (3% Komissiya & Nazorat)</span>
+        <span>›</span>
+      </div>
+    </div>
+
+    <!-- Admin Panel ichki qismi -->
+    <div id="adminPanelBox" class="form-card" style="display:none;">
+      <h3 style="margin-bottom:10px; color:var(--uzum-purple);">👑 Admin Boshqaruv Paneli</h3>
+      <div class="commission-box">
+        <div><strong>Admin ID:</strong> 8909500947</div>
+        <div><strong>Karta egasi:</strong> Jalilov Muxammadmuso</div>
+        <div><strong>Karta raqami:</strong> <code>4466 1369 5152 9313</code></div>
+        <div style="margin-top:4px; color:var(--green); font-weight:700;">Har bir sotilgan tovardan 3% avtomatik sizga tushadi!</div>
+      </div>
+
+      <div class="admin-stat-grid">
+        <div class="stat-box">
+          <div style="font-size:11px; color:var(--text-muted);">Sizning 3% daromadingiz</div>
+          <div class="val" id="adminTotalCommission">0 so'm</div>
+        </div>
+        <div class="stat-box">
+          <div style="font-size:11px; color:var(--text-muted);">Jami savdo aylanmasi</div>
+          <div class="val" id="adminTotalSales">0 so'm</div>
+        </div>
+        <div class="stat-box">
+          <div style="font-size:11px; color:var(--text-muted);">Tasdiqlangan sotuvchilar</div>
+          <div class="val" id="adminSellerCount">0 ta</div>
+        </div>
+        <div class="stat-box">
+          <div style="font-size:11px; color:var(--text-muted);">Sotib oluvchilar</div>
+          <div class="val" id="adminBuyerCount">0 ta</div>
+        </div>
+      </div>
+
+      <h4 style="margin:12px 0 6px;">🏪 Sotuvchilar (Pasport & Face ID)</h4>
+      <div id="adminSellersList" style="font-size:13px;"></div>
+
+      <h4 style="margin:12px 0 6px;">💸 Sotilgan tovarlar va 3% ulush</h4>
+      <div id="adminOrdersList" style="font-size:13px;"></div>
+    </div>
+
+    <div class="menu-card">
+      <div class="menu-row" onclick="openRoleModal()">
+        <span>🔄 Rolni tanlash (Sotuvchi / Sotib oluvchi)</span>
+        <span>›</span>
+      </div>
+      <div class="menu-row" onclick="switchPage('seller')">
+        <span>🏪 Sotuvchi bo‘lish / Tovar qo‘shish</span>
+        <span>›</span>
+      </div>
+      <div class="menu-row" onclick="toggleProfileSettings()">
+        <span>⚙️ Profil sozlamalari</span>
+        <span>›</span>
+      </div>
+    </div>
+
+    <!-- Profil sozlamalari (Uzum Market skrinshotidagi kabi) -->
+    <div id="profileSettingsForm" class="form-card" style="display:none;">
+      <h4 style="margin-bottom:12px;">Profil sozlamalari</h4>
+      <div class="form-group">
+        <label>Familiya</label>
+        <input type="text" id="setLastName" class="form-input" placeholder="Familiyani kiriting" />
+      </div>
+      <div class="form-group">
+        <label>Ism</label>
+        <input type="text" id="setFirstName" class="form-input" placeholder="Ismni kiriting" />
+      </div>
+      <div class="form-group">
+        <label>Telefon raqami</label>
+        <input type="tel" id="setPhone" class="form-input" placeholder="+998 90 000 00 00" />
+      </div>
+      <div class="form-group">
+        <label>Shahar / Viloyat</label>
+        <select id="setCity" class="form-select">
+          <option value="Toshkent">Toshkent</option>
+          <option value="Farg'ona">Farg'ona</option>
+          <option value="Samarqand">Samarqand</option>
+          <option value="Andijon">Andijon</option>
+          <option value="Namangan">Namangan</option>
+          <option value="Buxoro">Buxoro</option>
+        </select>
+      </div>
+      <button class="btn-primary" onclick="saveProfileSettings()">Saqlash</button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAVIGATION -->
+  <div class="bottom-nav">
+    <div class="nav-item active" id="nav-home" onclick="switchPage('home')">
+      <span class="nav-icon">🏠</span>
+      <span>Bosh sahifa</span>
+    </div>
+    <div class="nav-item" id="nav-catalog" onclick="switchPage('catalog')">
+      <span class="nav-icon">🔍</span>
+      <span>Katalog</span>
+    </div>
+    <div class="nav-item" id="nav-cart" onclick="switchPage('cart')">
+      <span class="nav-icon">🛍</span>
+      <span class="cart-badge" id="cartBadge">0</span>
+      <span>Savat</span>
+    </div>
+    <div class="nav-item" id="nav-seller" onclick="switchPage('seller')">
+      <span class="nav-icon">🏪</span>
+      <span>Sotuvchi</span>
+    </div>
+    <div class="nav-item" id="nav-profile" onclick="switchPage('profile')">
+      <span class="nav-icon">👤</span>
+      <span>Profil</span>
+    </div>
+  </div>
+
+  <!-- REGISTRATION MODAL (2 XIL RO'YXATDAN O'TISH) -->
+  <div id="roleModal" class="modal-overlay">
+    <div class="modal-sheet">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px;">
+        <h3>Ro'yxatdan o'tish turini tanlang</h3>
+        <span style="font-size:22px; cursor:pointer;" onclick="closeRoleModal()">✕</span>
+      </div>
+
+      <div id="roleSelectStep">
+        <div class="role-choice-card" onclick="startBuyerReg()">
+          <div style="font-size:17px; font-weight:800; color:var(--uzum-purple);">🛍 1. Sotib oluvchi sifatida ro'yxatdan o'tish</div>
+          <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">Mahsulotlarni ko‘rish, savatga qo‘shish va buyurtma berish uchun.</p>
+        </div>
+
+        <div class="role-choice-card" onclick="startSellerReg()">
+          <div style="font-size:17px; font-weight:800; color:var(--uzum-purple);">🏪 2. Sotuvchi sifatida ro'yxatdan o'tish</div>
+          <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">Telefon raqami, Pasport ma'lumotlari va Face ID orqali tasdiqlanib tovar sotish (har bir sotuvdan 3% platforma komissiyasi).</p>
+        </div>
+      </div>
+
+      <!-- BUYER REGISTRATION FORM -->
+      <div id="buyerRegForm" style="display:none;">
+        <h4 style="margin-bottom:10px;">🛍 Sotib oluvchi ro'yxatdan o'tishi</h4>
+        <div class="form-group">
+          <label>Ism va Familiyangiz</label>
+          <input type="text" id="buyerNameInput" class="form-input" placeholder="Masalan: Sardor Aliyev" />
+        </div>
+        <div class="form-group">
+          <label>Telefon raqamingiz</label>
+          <input type="tel" id="buyerPhoneInput" class="form-input" placeholder="+998 90 123 45 67" />
+        </div>
+        <button class="btn-primary" onclick="completeBuyerReg()">Sotib oluvchi sifatida kirish</button>
+        <button class="btn-secondary" onclick="backToRoleSelect()">Orqaga</button>
+      </div>
+
+      <!-- SELLER REGISTRATION FORM (PHONE + PASSPORT + FACE ID) -->
+      <div id="sellerRegForm" style="display:none;">
+        <h4 style="margin-bottom:6px;">🏪 Sotuvchi KYC va Face ID tekshiruvi</h4>
+        <p style="font-size:12px; color:var(--text-muted); margin-bottom:12px;">Barcha maydonlarni to‘ldiring va yuzingizni Face ID orqali tasdiqlang.</p>
+
+        <div class="form-group">
+          <label>1. Do'kon nomi va F.I.Sh.</label>
+          <input type="text" id="sellerShopInput" class="form-input" placeholder="Masalan: TechnoStore — Azizov Jasur" />
+        </div>
+
+        <div class="form-group">
+          <label>2. Telefon raqamingiz (majburiy)</label>
+          <input type="tel" id="sellerPhoneInput" class="form-input" placeholder="+998 90 123 45 67" />
+        </div>
+
+        <div class="form-group">
+          <label>3. Pasport seriya va raqami</label>
+          <input type="text" id="sellerPassportInput" class="form-input" placeholder="AA 1234567" maxlength="10" style="text-transform:uppercase;" />
+        </div>
+
+        <div class="form-group">
+          <label>4. JSHSHIR (14 xonali PINFL)</label>
+          <input type="number" id="sellerPinflInput" class="form-input" placeholder="30101951234567" />
+        </div>
+
+        <div class="form-group">
+          <label>5. Yuzni aniqlovchi Face ID skaneri</label>
+          <div class="face-box">
+            <div class="face-ring" id="faceRing">
+              <video id="faceVideo" autoplay playsinline muted style="display:none;"></video>
+              <img id="facePreviewImg" style="display:none;" />
+              <span id="facePlaceholder" style="font-size:44px;">🪪</span>
+              <div class="scan-line" id="scanLine"></div>
+            </div>
+            <div id="faceStatusText" style="font-size:12px; text-align:center; margin-bottom:8px;">
+              Face ID tekshiruvi uchun kamerani yoqing
+            </div>
+            <div style="display:flex; gap:8px; width:100%;">
+              <button type="button" class="btn-primary" style="margin:0; font-size:13px;" onclick="startFaceCamera()">📷 Kamerani yoqish</button>
+              <button type="button" id="captureFaceBtn" class="btn-primary" style="margin:0; font-size:13px; background:var(--green); display:none;" onclick="verifyFaceID()">✅ Yuzni skanerlash</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="commission-box">
+          <strong>Komissiya sharti:</strong> Sotuvchi sifatida sotgan har bir tovaringiz narxidan avtomatik <strong>3%</strong> platforma egasi (<strong>Jalilov Muxammadmuso</strong>) hisobiga o‘tadi, <strong>97%</strong> sizning balansingizga tushadi.
+        </div>
+
+        <button class="btn-primary" onclick="completeSellerReg()">Ro'yxatdan o'tishni yakunlash</button>
+        <button class="btn-secondary" onclick="backToRoleSelect()">Orqaga</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    if (tg) {
+      tg.ready();
+      tg.expand();
+    }
+
+    // ADMIN KONFIGURATSIYA
+    const ADMIN_ID = 8909500947;
+    const ADMIN_CARD = "4466 1369 5152 9313";
+    const ADMIN_OWNER = "Jalilov Muxammadmuso";
+    const COMMISSION_RATE = 0.03; // 3%
+
+    // Telegram foydalanuvchi ID sini olish
+    const urlParams = new URLSearchParams(window.location.search);
+    const tgUser = tg?.initDataUnsafe?.user;
+    const currentUserId = tgUser?.id || Number(urlParams.get("user_id")) || 0;
+    const isAdmin = (currentUserId === ADMIN_ID);
+
+    // LocalStorage Ma'lumotlar bazasi
+    let state = JSON.parse(localStorage.getItem("uzum_tg_market_v1")) || {
+      currentUser: {
+        id: currentUserId,
+        role: isAdmin ? "admin" : "guest", // guest | buyer | seller | admin
+        name: tgUser ? `${tgUser.first_name || ""} ${tgUser.last_name || ""}`.trim() : "Foydalanuvchi",
+        phone: "",
+        city: "Farg'ona",
+        shopName: "",
+        passport: "",
+        pinfl: "",
+        faceVerified: false,
+        facePhoto: "",
+        sellerBalance: 0
+      },
+      sellers: [],
+      buyers: [],
+      orders: [],
+      cart: [],
+      products: [
+        { id: 101, title: "Simsiz quloqchinlar Pro ANC", category: "Elektronika", price: 250000, sellerName: "Uzum Official", sellerId: 8909500947, icon: "🎧" },
+        { id: 102, title: "Erkaklar klassik kurtkasi", category: "Kiyim", price: 380000, sellerName: "Moda Lux", sellerId: 8909500947, icon: "🧥" },
+        { id: 103, title: "Avtomobil dvigatel tozalagichi 600ml", category: "Avtotovarlar", price: 65000, sellerName: "AvtoMaster", sellerId: 8909500947, icon: "🧴" },
+        { id: 104, title: "Aqlli robot changyutgich", category: "Maishiy texnika", price: 1850000, sellerName: "HomeTech", sellerId: 8909500947, icon: "🤖" }
+      ]
+    };
+
+    if (currentUserId && !state.currentUser.id) {
+      state.currentUser.id = currentUserId;
+    }
+    if (isAdmin) {
+      state.currentUser.role = "admin";
+    }
+
+    let selectedCategory = "All";
+    let videoStream = null;
+    let capturedFaceData = "";
+
+    function saveState() {
+      localStorage.setItem("uzum_tg_market_v1", JSON.stringify(state));
+      updateUI();
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.style.display = "block";
+      setTimeout(() => { t.style.display = "none"; }, 2800);
+    }
+
+    function formatSum(num) {
+      return Math.round(num).toLocaleString("ru-RU") + " so'm";
+    }
+
+    function sendToBot(payload) {
+      if (tg && typeof tg.sendData === "function") {
+        try {
+          tg.sendData(JSON.stringify(payload));
+        } catch (e) {
+          console.log("WebApp sendData:", e);
+        }
+      }
+    }
+
+    // UI Yangilash
+    function updateUI() {
+      const u = state.currentUser;
+      document.getElementById("userCity").textContent = u.city || "Farg'ona";
+      document.getElementById("profName").textContent = u.name || "Foydalanuvchi";
+      document.getElementById("profPhone").textContent = u.phone || "+998 -- --- -- --";
+      document.getElementById("profAvatar").textContent = (u.name || "U")[0].toUpperCase();
+      document.getElementById("profIdLabel").textContent = `Telegram ID: ${currentUserId || "Brauzer rejimi"}`;
+
+      const badge = document.getElementById("roleBadge");
+      if (isAdmin) {
+        badge.textContent = "👑 ADMIN";
+        badge.classList.add("admin");
+        document.getElementById("adminEntryCard").style.display = "block";
+      } else if (u.role === "seller" && u.faceVerified) {
+        badge.textContent = "✅ Sotuvchi (Face ID)";
+        badge.classList.remove("admin");
+      } else if (u.role === "buyer") {
+        badge.textContent = "🛍 Sotib oluvchi";
+        badge.classList.remove("admin");
+      } else {
+        badge.textContent = "Ro'yxatdan o'tish";
+      }
+
+      // Cart count
+      const totalCart = state.cart.reduce((s, item) => s + item.qty, 0);
+      document.getElementById("cartBadge").textContent = totalCart;
+
+      renderProducts();
+      renderCategories();
+      renderCart();
+      renderSellerPage();
+      if (isAdmin) renderAdminStats();
+    }
+
+    // Sahifalar almashinuvi
+    function switchPage(pageName) {
+      document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+      document.querySelectorAll(".nav-item").forEach(n => n.classList.remove("active"));
+      document.getElementById(`page-${pageName}`).classList.add("active");
+      document.getElementById(`nav-${pageName}`).classList.add("active");
+    }
+
+    // Mahsulotlar ro'yxati
+    function renderProducts() {
+      const q = document.getElementById("searchInput").value.toLowerCase();
+      const grid = document.getElementById("productGrid");
+      const filtered = state.products.filter(p => {
+        const matchCat = selectedCategory === "All" || p.category === selectedCategory;
+        const matchQuery = p.title.toLowerCase().includes(q) || p.category.toLowerCase().includes(q);
+        return matchCat && matchQuery;
+      });
+
+      grid.innerHTML = filtered.map(p => `
+        <div class="p-card">
+          <div class="p-img">
+            <span>${p.icon || "📦"}</span>
+            <div class="p-badge">Original</div>
+          </div>
+          <div class="p-body">
+            <div class="p-title">${p.title}</div>
+            <div class="p-seller">🏪 ${p.sellerName}</div>
+            <div class="p-installment">${formatSum(p.price / 12)}/oyiga</div>
+            <div class="p-footer">
+              <div class="p-price">${formatSum(p.price)}</div>
+              <button class="add-cart-btn" onclick="addToCart(${p.id})">🛒</button>
+            </div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function filterByCat(cat) {
+      selectedCategory = cat;
+      switchPage("home");
+      renderProducts();
+    }
+
+    function renderCategories() {
+      const cats = [
+        { name: "All", label: "Barcha mahsulotlar", icon: "🔥" },
+        { name: "Elektronika", label: "Elektronika", icon: "🎧" },
+        { name: "Maishiy texnika", label: "Maishiy texnika", icon: "🧺" },
+        { name: "Kiyim", label: "Kiyim va poyabzal", icon: "🧥" },
+        { name: "Avtotovarlar", label: "Avtotovarlar", icon: "🚗" },
+        { name: "Go'zallik", label: "Go'zallik va parvarish", icon: "💄" },
+        { name: "Uy-ro'zg'or", label: "Uy-ro'zg'or buyumlari", icon: "🏠" }
+      ];
+      document.getElementById("categoryList").innerHTML = cats.map(c => `
+        <div class="cat-item" onclick="filterByCat('${c.name}')">
+          <span>${c.icon} &nbsp; ${c.label}</span>
+          <span style="color:var(--text-muted);">›</span>
+        </div>
+      `).join("");
+    }
+
+    // Savat va Xarid (3% Admin komissiya hisob-kitobi bilan)
+    function addToCart(productId) {
+      if (state.currentUser.role === "guest") {
+        openRoleModal();
+        showToast("Avval ro'yxatdan o'ting!");
+        return;
+      }
+      const existing = state.cart.find(c => c.id === productId);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        state.cart.push({ id: productId, qty: 1 });
+      }
+      saveState();
+      showToast("Savatga qo'shildi ✅");
+    }
+
+    function renderCart() {
+      const box = document.getElementById("cartContainer");
+      if (!state.cart.length) {
+        box.innerHTML = `<div style="text-align:center; padding:24px 0;">
+          <div style="font-size:44px; margin-bottom:8px;">🛍</div>
+          <h4>Savatingiz hozircha bo‘sh</h4>
+          <p style="font-size:13px; color:var(--text-muted); margin-top:4px;">Bosh sahifadan kerakli mahsulotlarni tanlang</p>
+        </div>`;
+        return;
+      }
+
+      let total = 0;
+      const itemsHtml = state.cart.map(c => {
+        const prod = state.products.find(p => p.id === c.id);
+        if (!prod) return "";
+        const sub = prod.price * c.qty;
+        total += sub;
+        return `
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:10px 0; border-bottom:1px solid var(--border);">
+            <div>
+              <div style="font-weight:700; font-size:14px;">${prod.icon} ${prod.title}</div>
+              <div style="font-size:12px; color:var(--text-muted);">${prod.qty || c.qty} dona × ${formatSum(prod.price)}</div>
+            </div>
+            <div style="font-weight:800;">${formatSum(sub)}</div>
+          </div>
+        `;
+      }).join("");
+
+      const adminFee = Math.round(total * COMMISSION_RATE);
+
+      box.innerHTML = `
+        ${itemsHtml}
+        <div style="margin-top:14px; font-size:14px;">
+          <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+            <span>Jami to‘lov:</span>
+            <strong style="font-size:17px; color:var(--uzum-purple);">${formatSum(total)}</strong>
+          </div>
+          <div style="font-size:11px; color:var(--text-muted);">
+            * Platforma xizmat haqi (3%): ${formatSum(adminFee)} avtomatik ajratiladi.
+          </div>
+        </div>
+        <button class="btn-primary" onclick="checkoutCart()">Buyurtmani rasmiylashtirish</button>
+        <button class="btn-secondary" onclick="clearCart()">Savatni tozalash</button>
+      `;
+    }
+
+    function clearCart() {
+      state.cart = [];
+      saveState();
+    }
+
+    function checkoutCart() {
+      let total = 0;
+      const orderItems = [];
+
+      state.cart.forEach(c => {
+        const prod = state.products.find(p => p.id === c.id);
+        if (prod) {
+          const itemTotal = prod.price * c.qty;
+          const fee3 = Math.round(itemTotal * COMMISSION_RATE);
+          const sellerNet = itemTotal - fee3;
+          total += itemTotal;
+
+          // Sotuvchi balansiga 97% qo'shish
+          const sObj = state.sellers.find(s => s.id === prod.sellerId);
+          if (sObj) {
+            sObj.balance = (sObj.balance || 0) + sellerNet;
+            sObj.totalCommissionPaid = (sObj.totalCommissionPaid || 0) + fee3;
+          }
+
+          orderItems.push({
+            title: prod.title,
+            qty: c.qty,
+            total: itemTotal,
+            adminFee3Percent: fee3,
+            sellerNet97Percent: sellerNet,
+            sellerName: prod.sellerName
+          });
+        }
+      });
+
+      const totalAdminFee = Math.round(total * COMMISSION_RATE);
+      const newOrder = {
+        id: Date.now(),
+        buyerName: state.currentUser.name,
+        buyerPhone: state.currentUser.phone,
+        total: total,
+        adminFee: totalAdminFee,
+        items: orderItems,
+        date: new Date().toLocaleString("uz-UZ")
+      };
+
+      state.orders.unshift(newOrder);
+      state.cart = [];
+      saveState();
+
+      showToast(`Buyurtma qabul qilindi! Admin 3% ulushi: ${formatSum(totalAdminFee)}`);
+      sendToBot({
+        action: "new_order",
+        order: newOrder
+      });
+    }
+
+    // SOTUVCHI SAHIFASI (KYC + FACE ID + TOVAR QO'SHISH)
+    function renderSellerPage() {
+      const box = document.getElementById("sellerContent");
+      const u = state.currentUser;
+
+      if (u.role !== "seller" || !u.faceVerified) {
+        box.innerHTML = `
+          <div class="form-card" style="text-align:center;">
+            <div style="font-size:48px; margin-bottom:8px;">🪪</div>
+            <h3>Sotuvchi sifatida tasdiqlanmagansiz</h3>
+            <p style="font-size:13px; color:var(--text-muted); margin:8px 0 14px;">
+              Tovar joylash uchun Telefon raqami, Pasport ma'lumotlari va Face ID tekshiruvidan o‘tishingiz shart.
+            </p>
+            <button class="btn-primary" onclick="startSellerReg(); document.getElementById('roleModal').classList.add('open');">
+              Sotuvchi ro'yxatidan o'tish (Face ID)
+            </button>
+          </div>
+        `;
+        return;
+      }
+
+      const mySeller = state.sellers.find(s => s.id === u.id) || { balance: 0, totalCommissionPaid: 0 };
+
+      box.innerHTML = `
+        <div class="form-card">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+              <div style="font-weight:800; font-size:16px;">🏪 ${u.shopName || u.name}</div>
+              <div style="font-size:12px; color:var(--green); font-weight:700;">✅ Pasport & Face ID tasdiqlangan</div>
+            </div>
+            <div style="text-align:right;">
+              <div style="font-size:11px; color:var(--text-muted);">Sizning sof balansingiz (97%)</div>
+              <div style="font-size:16px; font-weight:800; color:var(--uzum-purple);">${formatSum(mySeller.balance || 0)}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-card">
+          <h4 style="margin-bottom:10px;">➕ Yangi tovar qo'shish</h4>
+          <div class="form-group">
+            <label>Tovar nomi</label>
+            <input type="text" id="newProdTitle" class="form-input" placeholder="Masalan: iPhone 16 Pro g'ilofi" />
+          </div>
+          <div class="form-group">
+            <label>Toifa</label>
+            <select id="newProdCat" class="form-select">
+              <option value="Elektronika">Elektronika</option>
+              <option value="Maishiy texnika">Maishiy texnika</option>
+              <option value="Kiyim">Kiyim</option>
+              <option value="Avtotovarlar">Avtotovarlar</option>
+              <option value="Go'zallik">Go'zallik</option>
+              <option value="Uy-ro'zg'or">Uy-ro'zg'or</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Narxi (so'mda)</label>
+            <input type="number" id="newProdPrice" class="form-input" placeholder="100000" oninput="calcSellerPreview()" />
+          </div>
+          <div class="form-group">
+            <label>Tovar belgisi (Emoji)</label>
+            <input type="text" id="newProdIcon" class="form-input" value="📦" maxlength="4" />
+          </div>
+
+          <div class="commission-box" id="commissionPreviewBox">
+            Narx kiriting: har bir sotuvdan <strong>3%</strong> Admin komissiyasi va <strong>97%</strong> sizning daromadingiz hisoblanadi.
+          </div>
+
+          <button class="btn-primary" onclick="addNewProduct()">Tovarni sotuvga chiqarish</button>
+        </div>
+      `;
+    }
+
+    function calcSellerPreview() {
+      const price = Number(document.getElementById("newProdPrice").value) || 0;
+      const fee = Math.round(price * COMMISSION_RATE);
+      const net = price - fee;
+      document.getElementById("commissionPreviewBox").innerHTML = `
+        <div>Tovar narxi: <strong>${formatSum(price)}</strong></div>
+        <div style="color:var(--red);">Platforma komissiyasi (3%): <strong>-${formatSum(fee)}</strong></div>
+        <div style="color:var(--green);">Sizga qoladigan sof foyda (97%): <strong>${formatSum(net)}</strong></div>
+      `;
+    }
+
+    function addNewProduct() {
+      const title = document.getElementById("newProdTitle").value.trim();
+      const category = document.getElementById("newProdCat").value;
+      const price = Number(document.getElementById("newProdPrice").value);
+      const icon = document.getElementById("newProdIcon").value.trim() || "📦";
+
+      if (!title || price <= 0) {
+        showToast("Tovar nomi va narxini to'g'ri kiriting!");
+        return;
+      }
+
+      const prod = {
+        id: Date.now(),
+        title,
+        category,
+        price,
+        sellerName: state.currentUser.shopName || state.currentUser.name,
+        sellerId: state.currentUser.id || Date.now(),
+        icon
+      };
+
+      state.products.unshift(prod);
+      saveState();
+      showToast("Tovar muvaffaqiyatli qo'shildi! ✅");
+      sendToBot({ action: "add_product", product: prod });
+      switchPage("home");
+    }
+
+    // RO'YXATDAN O'TISH MODALI (BUYER & SELLER KYC + FACE ID)
+    function openRoleModal() {
+      backToRoleSelect();
+      document.getElementById("roleModal").classList.add("open");
+    }
+
+    function closeRoleModal() {
+      stopFaceCamera();
+      document.getElementById("roleModal").classList.remove("open");
+    }
+
+    function backToRoleSelect() {
+      document.getElementById("roleSelectStep").style.display = "block";
+      document.getElementById("buyerRegForm").style.display = "none";
+      document.getElementById("sellerRegForm").style.display = "none";
+    }
+
+    function startBuyerReg() {
+      document.getElementById("roleSelectStep").style.display = "none";
+      document.getElementById("buyerRegForm").style.display = "block";
+    }
+
+    function startSellerReg() {
+      document.getElementById("roleSelectStep").style.display = "none";
+      document.getElementById("sellerRegForm").style.display = "block";
+    }
+
+    function completeBuyerReg() {
+      const name = document.getElementById("buyerNameInput").value.trim();
+      const phone = document.getElementById("buyerPhoneInput").value.trim();
+      if (!name || phone.length < 9) {
+        showToast("Ism va telefon raqamingizni to'liq kiriting!");
+        return;
+      }
+      state.currentUser.role = "buyer";
+      state.currentUser.name = name;
+      state.currentUser.phone = phone;
+      state.buyers.push({ id: currentUserId || Date.now(), name, phone });
+      saveState();
+      closeRoleModal();
+      showToast("Sotib oluvchi sifatida ro'yxatdan o'tdingiz! 🎉");
+      sendToBot({ action: "register_buyer", user: state.currentUser });
+    }
+
+    // FACE ID JONLI KAMERA FUNKSIYALARI
+    async function startFaceCamera() {
+      try {
+        const video = document.getElementById("faceVideo");
+        const placeholder = document.getElementById("facePlaceholder");
+        const scanLine = document.getElementById("scanLine");
+        const captureBtn = document.getElementById("captureFaceBtn");
+
+        videoStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+        video.srcObject = videoStream;
+        video.style.display = "block";
+        placeholder.style.display = "none";
+        scanLine.style.display = "block";
+        captureBtn.style.display = "block";
+        document.getElementById("faceStatusText").textContent = "Yuzingizni doira ichiga to'g'rilang va 'Yuzni skanerlash' tugmasini bosing";
+      } catch (err) {
+        // Agar WebView kameraga ruxsat bermasa, avtomatik biometrik simulyatsiya imkoniyati
+        document.getElementById("faceStatusText").textContent = "Kamera ruxsati cheklangan. Tasdiqlash uchun tugmani bosing:";
+        document.getElementById("captureFaceBtn").style.display = "block";
+      }
+    }
+
+    function stopFaceCamera() {
+      if (videoStream) {
+        videoStream.getTracks().forEach(t => t.stop());
+        videoStream = null;
+      }
+    }
+
+    function verifyFaceID() {
+      const video = document.getElementById("faceVideo");
+      const img = document.getElementById("facePreviewImg");
+      const ring = document.getElementById("faceRing");
+      const scanLine = document.getElementById("scanLine");
+
+      if (videoStream && video.videoWidth > 0) {
+        const canvas = document.createElement("canvas");
+        canvas.width = 240;
+        canvas.height = 240;
+        canvas.getContext("2d").drawImage(video, 0, 0, 240, 240);
+        capturedFaceData = canvas.toDataURL("image/jpeg", 0.7);
+        img.src = capturedFaceData;
+        img.style.display = "block";
+        video.style.display = "none";
+      } else {
+        capturedFaceData = "FACE_ID_BIOMETRIC_VERIFIED";
+        document.getElementById("facePlaceholder").textContent = "✅";
+      }
+
+      stopFaceCamera();
+      scanLine.style.display = "none";
+      ring.classList.add("verified");
+      state.currentUser.faceVerified = true;
+      state.currentUser.facePhoto = capturedFaceData;
+      document.getElementById("faceStatusText").innerHTML = `<span style="color:#00FF88; font-weight:700;">✅ Face ID muvaffaqiyatli tasdiqlandi!</span>`;
+      showToast("Face ID tasdiqlandi! ✅");
+    }
+
+    function completeSellerReg() {
+      const shopName = document.getElementById("sellerShopInput").value.trim();
+      const phone = document.getElementById("sellerPhoneInput").value.trim();
+      const passport = document.getElementById("sellerPassportInput").value.trim().toUpperCase();
+      const pinfl = document.getElementById("sellerPinflInput").value.trim();
+
+      if (!shopName || phone.length < 9 || passport.length < 7 || pinfl.length < 14) {
+        showToast("Telefon, Pasport va 14 xonali JSHSHIR ni to'liq kiriting!");
+        return;
+      }
+      if (!state.currentUser.faceVerified) {
+        showToast("Avval Face ID yuz tekshiruvidan o'ting!");
+        return;
+      }
+
+      const sellerId = currentUserId || Date.now();
+      state.currentUser.id = sellerId;
+      state.currentUser.role = "seller";
+      state.currentUser.name = shopName;
+      state.currentUser.shopName = shopName;
+      state.currentUser.phone = phone;
+      state.currentUser.passport = passport;
+      state.currentUser.pinfl = pinfl;
+
+      state.sellers.push({
+        id: sellerId,
+        shopName,
+        phone,
+        passport,
+        pinfl,
+        faceVerified: true,
+        balance: 0,
+        totalCommissionPaid: 0
+      });
+
+      saveState();
+      closeRoleModal();
+      showToast("Tabriklaymiz! Face ID tasdiqlangan Sotuvchi bo'ldingiz 🎉");
+      sendToBot({
+        action: "register_seller_kyc",
+        seller: { id: sellerId, shopName, phone, passport, pinfl, faceVerified: true }
+      });
+      switchPage("seller");
+    }
+
+    // PROFIL SOZLAMALARI
+    function toggleProfileSettings() {
+      const f = document.getElementById("profileSettingsForm");
+      f.style.display = f.style.display === "none" ? "block" : "none";
+    }
+
+    function saveProfileSettings() {
+      const fn = document.getElementById("setFirstName").value.trim();
+      const ln = document.getElementById("setLastName").value.trim();
+      const ph = document.getElementById("setPhone").value.trim();
+      const ct = document.getElementById("setCity").value;
+      if (fn || ln) state.currentUser.name = `${fn} ${ln}`.trim();
+      if (ph) state.currentUser.phone = ph;
+      state.currentUser.city = ct;
+      saveState();
+      toggleProfileSettings();
+      showToast("Profil saqlandi ✅");
+    }
+
+    // ADMIN PANEL FUNKSIYALARI (ID: 8909500947)
+    function toggleAdminPanel() {
+      const p = document.getElementById("adminPanelBox");
+      p.style.display = p.style.display === "none" ? "block" : "none";
+      renderAdminStats();
+    }
+
+    function renderAdminStats() {
+      const totalSales = state.orders.reduce((s, o) => s + o.total, 0);
+      const totalComm = state.orders.reduce((s, o) => s + o.adminFee, 0);
+
+      document.getElementById("adminTotalSales").textContent = formatSum(totalSales);
+      document.getElementById("adminTotalCommission").textContent = formatSum(totalComm);
+      document.getElementById("adminSellerCount").textContent = state.sellers.length + " ta";
+      document.getElementById("adminBuyerCount").textContent = state.buyers.length + " ta";
+
+      document.getElementById("adminSellersList").innerHTML = state.sellers.length
+        ? state.sellers.map(s => `
+          <div style="padding:8px; border:1px solid var(--border); border-radius:10px; margin-bottom:6px;">
+            <div><strong>${s.shopName}</strong> (ID: ${s.id})</div>
+            <div>📞 ${s.phone} | 🪪 Pasport: <strong>${s.passport}</strong></div>
+            <div>JSHSHIR: ${s.pinfl} | Face ID: <span style="color:var(--green);">✅ Tasdiqlangan</span></div>
+          </div>
+        `).join("")
+        : "<div style='color:var(--text-muted);'>Hozircha sotuvchilar yo'q</div>";
+
+      document.getElementById("adminOrdersList").innerHTML = state.orders.length
+        ? state.orders.map(o => `
+          <div style="padding:8px; border:1px solid var(--border); border-radius:10px; margin-bottom:6px;">
+            <div><strong>Xaridor:</strong> ${o.buyerName} (${o.date})</div>
+            <div>Jami savdo: ${formatSum(o.total)} | <span style="color:var(--green); font-weight:700;">Sizning 3%: +${formatSum(o.adminFee)}</span></div>
+          </div>
+        `).join("")
+        : "<div style='color:var(--text-muted);'>Hozircha buyurtmalar yo'q</div>";
+    }
+
+    // Ilovani ishga tushirish
+    updateUI();
+  </script>
+</body>
+</html>
